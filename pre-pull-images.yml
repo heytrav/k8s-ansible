@@ -1,0 +1,24 @@
+
+- name: Pre pull some really large docker images
+  hosts: localhost
+  tags: prepull
+  vars:
+    # These are some large docker images which are notorious for  slowing down
+    # the local wifi.
+    images:
+      - ubuntu:latest
+      - golang:1.7.3
+      - dockersamples/examplevotingapp_worker
+      - dockersamples/examplevotingapp_vote:before
+      - dockersamples/examplevotingapp_result:before
+      - dockersamples/visualizer:stable
+      - library/postgres:latest
+      - microsoft/dotnet:2.0.0-sdk
+
+
+  tasks:
+    - name: pull some large images from docker hub
+      shell: "docker pull {{ item }}"
+      with_items: "{{ images }}"
+    
+
