@@ -1,9 +1,5 @@
 ---
 # TODO: Add alternative steps for centos, other distros.
-- name: Apt dist upgrade
-  apt:
-    upgrade: dist
-    autoremove: yes
 
 - name: Install packages required for docker
   apt:
