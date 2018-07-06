@@ -11,3 +11,10 @@
         owner: "{{ lookup('env', 'USER') }}"
         group: "{{ lookup('env', 'USER') }}" 
         mode: '0644'
+
+
+- name: Populate cloud configuration
+  hosts: localhost
+  roles:
+    - role: openstack-cloud
+

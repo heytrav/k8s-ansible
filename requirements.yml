@@ -6,5 +6,10 @@
 
 - src: https://github.com/heytrav/ansible-setup-openstack.git
   scm: git
-  name: setup-openstack
+  name: openstack-cloud
+  version: master
+
+- src: https://github.com/heytrav/ansible-docker-compose.git
+  scm: git
+  name: docker-compose
   version: master
