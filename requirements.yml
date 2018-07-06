@@ -1,0 +1,10 @@
+
+- src: https://github.com/heytrav/ansible-docker.git
+  scm: git
+  name: docker
+  version: master
+
+- src: https://github.com/heytrav/ansible-setup-openstack.git
+  scm: git
+  name: setup-openstack
+  version: master
