@@ -1,5 +1,10 @@
 ---
 
+cloud_name: docker-training
+os_username: docker-training@catalyst.net.nz
+os_project_name: os-training.catalyst.net.nz
+os_project_id: 0cb6b9b744594a619b0b7340f424858b
+
 suffix: "-{{ prefix }}"
 ssh_user: "{{ lookup('env', 'USER') }}"
 ssh_public_key_file: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa.pub"

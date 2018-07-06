@@ -23,19 +23,19 @@
   tasks:
     - name: Connect to Catalyst Cloud
       os_auth:
-        cloud: "{{ cloud }}"
+        cloud: "{{ cloud_name }}"
 
     - name: Create keypair
       os_keypair:
         name: "{{ keypair_name }}"
         public_key: "{{ ssh_public_key }}"
-        cloud: "{{ cloud }}"
+        cloud: "{{ cloud_name }}"
 
     - name: Create Network
       os_network:
         name: "{{ network_name }}"
         state: present
-        cloud: "{{ cloud }}"
+        cloud: "{{ cloud_name }}"
 
     - name: Create subnet
       os_subnet:
@@ -47,12 +47,12 @@
         allocation_pool_end: "{{ subnet_dhcp_end }}"
         ip_version: 4
         dns_nameservers: "{{ default_nameservers }}"
-        cloud: "{{ cloud }}"
+        cloud: "{{ cloud_name }}"
 
 
     - name: Create router
       os_router:
-        cloud: "{{ cloud }}"
+        cloud: "{{ cloud_name }}"
         state: present
         name: "{{ router_name }}"
         network: "{{ public_net_name }}"
@@ -61,14 +61,14 @@
 
     - name: Create security groups
       os_security_group:
-        cloud: "{{ cloud }}"
+        cloud: "{{ cloud_name }}"
         state: present
         name: "{{ item }}"
       with_items: "{{ security_group_names }}"
 
     - name: Add rules for security group
       os_security_group_rule:
-        cloud: "{{ cloud }}"
+        cloud: "{{ cloud_name }}"
         state: present
         security_group: "{{ item.group }}"
         protocol: "{{ item.proto | default('tcp') }}"
@@ -81,7 +81,7 @@
 
     - name: Create cluster instances
       os_server:
-        cloud: "{{ cloud }}"
+        cloud: "{{ cloud_name }}"
         state: present
         name: "{{ item }}"
         image: "{{ default_os_image }}"
@@ -107,7 +107,7 @@
 
     - name: Assign floating ips
       os_floating_ip:
-        cloud: "{{ cloud }}"
+        cloud: "{{ cloud_name }}"
         state: present
         reuse: yes
         wait: true
