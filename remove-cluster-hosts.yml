@@ -19,23 +19,27 @@
     ansible_python_interpreter: "/home/{{ lookup('env', 'USER') }}/catalystcloud-ansible/ansible-venv/bin/python"
 
   tasks:
-    - name: Connect to Catalyst Cloud
-      os_auth:
-        cloud: "{{ cloud_name }}"
+    - block:
+    
+        - name: Connect to Catalyst Cloud
+          os_auth:
+            cloud: "{{ cloud_name }}"
 
-    - name: Remove floating ips from known_hosts
-      known_hosts:
-        name: "{{ item }}"
-        state: absent
-      with_items: "{{ host_set }}"
+        - name: Remove floating ips from known_hosts
+          known_hosts:
+            name: "{{ item }}"
+            state: absent
+          with_items: "{{ host_set }}"
 
-    - name: Remove cluster servers
-      os_server:
-        cloud: "{{ cloud_name }}"
-        name: "{{ item }}"
-        state: absent
-        delete_fip: true
-      with_items: "{{ host_set }}"
+        - name: Remove cluster servers
+          os_server:
+            cloud: "{{ cloud_name }}"
+            name: "{{ item }}"
+            state: absent
+            delete_fip: true
+          with_items: "{{ host_set }}"
+      tags: 
+        - select_nodes
 
     - name: Remove ports
       os_port:
@@ -69,26 +73,29 @@
         state: absent
       with_items: "{{ security_group_names }}"
 
-    - name: Remove hosts from local ~/.ssh/config
-      blockinfile:
-        dest: "{{  lookup('env', 'HOME')  }}/.ssh/config"
-        state: absent
-        marker: "# {mark} ANSIBLE MANAGED BLOCK for {{ item }}"
-      with_items: "{{ host_set }}"
+    - block:
+        - name: Remove hosts from local ~/.ssh/config
+          blockinfile:
+            dest: "{{  lookup('env', 'HOME')  }}/.ssh/config"
+            state: absent
+            marker: "# {mark} ANSIBLE MANAGED BLOCK for {{ item }}"
+          with_items: "{{ host_set }}"
 
-    - name: Remove host from /etc/hosts
-      become: yes
-      blockinfile:
-        dest: /etc/hosts
-        state: absent
-        insertafter: EOF
-        marker: "# {mark} ANSIBLE MANAGED BLOCK for {{ item }}"
-      with_items: "{{ host_set }}"
+        - name: Remove host from /etc/hosts
+          become: yes
+          blockinfile:
+            dest: /etc/hosts
+            state: absent
+            insertafter: EOF
+            marker: "# {mark} ANSIBLE MANAGED BLOCK for {{ item }}"
+          with_items: "{{ host_set }}"
 
 
-    - name: Remove fake domain from /etc/hosts
-      become: yes
-      blockinfile:
-        dest: /etc/hosts
-        state: absent
-        marker: "# {mark} ANSIBLE MANAGED BLOCK FOR voting.app"
+        - name: Remove fake domain from /etc/hosts
+          become: yes
+          blockinfile:
+            dest: /etc/hosts
+            state: absent
+            marker: "# {mark} ANSIBLE MANAGED BLOCK FOR voting.app"
+      tags: 
+        - select_nodes
