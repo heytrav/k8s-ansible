@@ -1,13 +1,24 @@
+---
+# It should only be necessary to run this if the machine could not be set up
+# by the normal playbooks in gitlab.wgtn.cat-it.co.nz/machine-setup-ansible
+#
 - name: Create cloud hosts file
   hosts: localhost
   tasks:
     - debug:
         var: prefix | mandatory
 
+    - name: Create ansible directory
+      file:
+        path: "{{ lookup('env', 'HOME') }}/.ansible/inventory"
+        state: directory
+        owner: "{{ lookup('env', 'USER') }}"
+        group: "{{ lookup('env', 'USER') }}"
+
     - name: Create host file for kubernetes cluster
       template:
         src: templates/hosts.j2
-        dest: "{{ lookup('env', 'PWD') }}/cloud-hosts"
+        dest: "{{ lookup('env', 'HOME') }}/.ansible/inventory/cloud-hosts"
         owner: "{{ lookup('env', 'USER') }}"
         group: "{{ lookup('env', 'USER') }}" 
         mode: '0644'
