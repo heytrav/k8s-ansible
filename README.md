@@ -31,8 +31,12 @@ cluster. By default it creates:
    ./install-ansible.sh
    ```
    This will require sudo privileges. Once it is complete you should have a
-   functioning python virtualenv with all the dependencies needed to run
-   Ansible.
+   functioning python virtualenv with all the dependencies needed to interact
+   with the Catalyst Cloud Openstack API. Make sure to source python
+   virtualenv
+   ```
+   source ~/catalystcloud-ansible/ansible-venv/bin/activate
+   ```
 1. Import roles needed for ansible
    ```
    (ansible-venv) ansible-galaxy install -f -r requirements.yml
