@@ -28,7 +28,10 @@ cluster. By default it creates:
 1. Set up a python virtualenv with Ansible. Currently the easiest way to do
    this is to clone the [Catalyst Cloud Ansible](https://github.com/catalyst/catalystcloud-ansible.git) repository. Once this has downloaded, go into the directory and run:
    ```
-   ./install-ansible.sh
+   $ cd
+   $ git clone https://github.com/catalyst/catalystcloud-ansible.git
+   $ cd catalystcloud-ansible
+   $ ./install-ansible.sh
    ```
    This will require sudo privileges. Once it is complete you should have a
    functioning python virtualenv with all the dependencies needed to interact
