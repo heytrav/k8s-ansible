@@ -45,7 +45,7 @@ cluster. By default it creates:
 Assuming all went well you should be able to build your Kubernetes cluster
 
 ```
-(ansible-venv) ansible-playbook -K create-cluster-hosts.yml kubeadm-install.yml  -e prefix=$(hostname) 
+(ansible-venv) ansible-playbook -K create-cluster-hosts.yml kubeadm-install.yml  -e prefix=<username> 
 ```
 
 This will do the following:
@@ -63,7 +63,7 @@ This will do the following:
 When you are done playing around, do not forget to tear down your cluster. 
 
 ```
-(ansible-venv) ansible-playbook remove-cluster-hosts.yml -K -e prefix=$(hostname)
+(ansible-venv) ansible-playbook remove-cluster-hosts.yml -K -e prefix=<username>
 ```
 
 
@@ -86,6 +86,5 @@ When you are done playing around, do not forget to tear down your cluster.
    *Note:* Recent versions of Ansible (>2.5.5) have broken some OpenStack API
    commands. For this reason you might need to do the following:
    ```
-   (ansible-venv) pip uninstall ansible
    (ansible-venv) pip install ansible==2.5.5
    ```
