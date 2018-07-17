@@ -67,7 +67,7 @@ When you are done playing around, do not forget to tear down your cluster.
 ```
 
 
-#### Settin up Ansible 
+#### Setting up Ansible 
 1. Set up a python virtualenv with Ansible. Currently the easiest way to do
    this is to clone the [Catalyst Cloud Ansible](https://github.com/catalyst/catalystcloud-ansible.git) repository. Once this has downloaded, go into the directory and run:
    ```
