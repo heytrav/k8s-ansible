@@ -22,7 +22,7 @@ cluster. By default it creates:
 1. Add the vault password for this project into the `~/.ansible/vault_password` file. You will probably get this from the course instructor.
 1. Install Ansible and dependencies for interacting with Catalyst Cloud. There
    are many ways to do this, but the easiest is to follow the directions below
-   (see Setting up Ansible)
+   (see [Setting up Ansible](# Setting up Ansible))
 1. Import roles needed for ansible
    ```
    (ansible-venv) ansible-galaxy install -f -r requirements.yml
