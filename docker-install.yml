@@ -4,6 +4,7 @@
   roles:
     - docker
     - docker-compose
+    - trainingpc-minikube
   pre_tasks: 
 
     - name: Bail out if not an ubuntu distribution

@@ -13,3 +13,8 @@
   scm: git
   name: docker-compose
   version: master
+
+- src: https://github.com/heytrav/ansible-minikube.git
+  scm: git
+  name: trainingpc-minikube
+  version: master
