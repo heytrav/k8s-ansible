@@ -20,16 +20,20 @@ cluster. By default it creates:
    vault_password_file = /home/USER/.ansible/vault_password
    ```
 1. Add the vault password for this project into the `~/.ansible/vault_password` file. You will probably get this from the course instructor.
-1. Install Ansible and dependencies for interacting with Catalyst Cloud. There
-   are many ways to do this, but the easiest is to follow the directions below
-   (see [Setting up Ansible](#setting-up-ansible))
+1. Check whether or not Ansible is installed. The machine you are using may already have Ansible
+   installed. You can check this by running 
+   ```
+   ansible --version
+   ```
+   If you get an error message saying that Ansible is not installed, follow
+   the [instructions](#setting-up-ansible) below.
 1. Import roles needed for ansible
    ```
    (ansible-venv) ansible-galaxy install -f -r requirements.yml
    ```
 1. Run the local setup playbook
    ```
-   (ansible-venv) ansible-playbook -i hosts -e prefix=<username> local-setup.yml
+   (ansible-venv) ansible-playbook -i hosts -e prefix=USERNAME local-setup.yml
    ```
    This creates an inventory file for your cloud hosts as well as a couple
    configuration files that will be used by Ansible to access the OpenStack
@@ -45,7 +49,7 @@ cluster. By default it creates:
 Assuming all went well you should be able to build your Kubernetes cluster
 
 ```
-(ansible-venv) ansible-playbook -K create-cluster-hosts.yml kubeadm-install.yml  -e prefix=<username> 
+(ansible-venv) ansible-playbook -K create-cluster-hosts.yml kubeadm-install.yml  -e prefix=USERNAME 
 ```
 
 This will do the following:
@@ -63,7 +67,7 @@ This will do the following:
 When you are done playing around, do not forget to tear down your cluster. 
 
 ```
-(ansible-venv) ansible-playbook remove-cluster-hosts.yml -K -e prefix=<username>
+(ansible-venv) ansible-playbook remove-cluster-hosts.yml -K -e prefix=USERNAME
 ```
 
 
