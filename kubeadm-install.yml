@@ -1,34 +1,17 @@
 
 
 - name: Install kubernetes admin on host machines
-  hosts: cluster:localhost
+  hosts: localhost
   become: true
   tasks:
+    - include_tasks: tasks/install-kubernetes.yml
+      when: ansible_distribution == 'Ubuntu'
 
-    - name: Add kubernetes repository key
-      apt_key:
-        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
-        state: present
-
-    - name: Add kubernetes repository
-      apt_repository:
-        repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
-        state: present
-
-    - name: Update cache
-      apt:
-        update_cache: yes
-      ignore_errors: true
-
-    - name: Install kubernetes packages
-      apt:
-        name: "{{ item }}"
-        state: present
-      with_items: 
-        - kubelet 
-        - kubeadm 
-        - kubectl
-
+- name: Install kubernetes admin on host machines
+  hosts: cluster
+  become: true
+  tasks:
+    - import_tasks: tasks/install-kubernetes.yml
 
 - name: Set up kubeadm on master node
   hosts: master
