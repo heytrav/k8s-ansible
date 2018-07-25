@@ -1,7 +1,15 @@
 
 
 - name: Install kubernetes admin on host machines
-  hosts: localhost:cluster
+  hosts: localhost
+  become: true
+  tags: 
+    - local_setup
+  tasks:
+    - include_tasks: "tasks/install-kubernetes-{{ ansible_os_family }}.yml"
+
+- name: Install kubernetes admin on host machines
+  hosts: cluster
   become: true
   tasks:
     - include_tasks: "tasks/install-kubernetes-{{ ansible_os_family }}.yml"
