@@ -8,7 +8,7 @@
   pre_tasks: 
 
     - name: Bail out if not an ubuntu distribution
-      when: ansible_distribution != "Ubuntu"
+      when: ansible_os_family != "Debian"
       fail:
         msg: "Sorry this only works on Ubuntu"
 

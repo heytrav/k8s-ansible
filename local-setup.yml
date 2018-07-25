@@ -29,5 +29,5 @@
   vars:
     ssh_user: "{{ lookup('env', 'USER') }}"
   roles:
-    - role: openstack-cloud
+    - role: cloud-config
 
