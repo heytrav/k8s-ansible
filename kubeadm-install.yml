@@ -1,17 +1,10 @@
 
 
 - name: Install kubernetes admin on host machines
-  hosts: localhost
+  hosts: localhost:cluster
   become: true
   tasks:
-    - include_tasks: tasks/install-kubernetes.yml
-      when: ansible_distribution == 'Ubuntu'
-
-- name: Install kubernetes admin on host machines
-  hosts: cluster
-  become: true
-  tasks:
-    - import_tasks: tasks/install-kubernetes.yml
+    - include_tasks: "tasks/install-kubernetes-{{ ansible_os_family }}.yml"
 
 - name: Set up kubeadm on master node
   hosts: master

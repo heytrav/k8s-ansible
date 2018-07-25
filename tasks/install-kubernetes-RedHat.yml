@@ -1,0 +1,44 @@
+---
+- name: Add Kubernetes repository
+  yum_repository:
+    name: Kubernetes
+    description: Kubernetes repo
+    state: present
+    enabled: yes
+    gpgcheck: yes
+    repo_gpgcheck: yes
+    baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+    gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+
+- name: Disable SELinux
+  command: setenforce 0
+
+- name: Set network bridge
+  copy:
+    dest: /etc/sysctl.d/k8s.conf
+    src: files/redhat-network-iptables.conf
+    owner: root
+    group: root
+    
+- name: Run sysctl on RedHat machine
+  command: sysctl --system
+
+- name: Install kubernetes packages
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - kubelet
+    - kubeadm
+    - kubectl
+
+- name: Enable kubelet
+  systemd:
+    name: kubelet
+    enabled: yes
+
+- name: Start kubelet
+  systemd:
+    name: kubelet
+    state: started
+- 
