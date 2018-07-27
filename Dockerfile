@@ -6,4 +6,11 @@ RUN touch /etc/apt/sources.list.d/kubernetes.list && \
    echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
 RUN apt-get update && apt-get install -y kubectl
 
+EXPOSE 8001
+
+WORKDIR /opt/k8s
+COPY k8s-admin.conf .
+
+CMD ["kubectl", "--kubeconfig", "~/k8s-admin.conf","proxy"]
+
 
