@@ -11,6 +11,6 @@ EXPOSE 8001
 WORKDIR /opt/k8s
 COPY k8s-admin.conf .
 
-CMD ["kubectl", "--kubeconfig", "~/k8s-admin.conf","proxy"]
+CMD ["kubectl", "--kubeconfig", "/opt/k8s/k8s-admin.conf","proxy"]
 
 
