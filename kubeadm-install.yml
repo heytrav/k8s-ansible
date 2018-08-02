@@ -3,9 +3,10 @@
 - name: Install kubernetes admin on host machines
   hosts: localhost
   become: true
+  tags: 
+    - local_setup
   tasks:
     - include_tasks: tasks/install-kubernetes.yml
-      when: ansible_distribution == 'Ubuntu'
 
 - name: Install kubernetes admin on host machines
   hosts: cluster
