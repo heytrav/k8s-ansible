@@ -7,7 +7,6 @@
         var: prefix | mandatory
 
 
-
 - name: Provision a set of hosts in the Catalyst Cloud
   hosts: localhost
   gather_facts: false
@@ -184,7 +183,7 @@
 
     - name: Install python
       raw: >
-        which python || apt-get install -y python && echo 'installed'
+        which python || apt-get update -y && apt-get install -y python && echo 'installed'
       register: python
       changed_when: python.stdout == 'installed'
 

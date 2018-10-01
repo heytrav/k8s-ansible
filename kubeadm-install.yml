@@ -8,11 +8,9 @@
   tasks:
     - name: Fetch kubectl for local machine
       get_url: 
-        url: "https://storage.googleapis.com/kubernetes-release/release/v1.11.1/bin/linux/amd64/kubectl"
+        url: "https://storage.googleapis.com/kubernetes-release/release/{{ kubectl_version }}/bin/linux/amd64/kubectl"
         dest: /usr/local/bin/kubectl
-        sha256sum: "{{ checksum }}"
         mode: '0755'
-      
 
 
 - name: Install kubernetes admin on host machines

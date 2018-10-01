@@ -1,0 +1,2 @@
+---
+kubectl_version: "{{ lookup('lines', 'curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt') }}"
