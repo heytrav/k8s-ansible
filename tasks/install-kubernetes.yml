@@ -1,24 +1,24 @@
 ---
-- name: Add kubernetes repository key                         
-  apt_key:                                                    
+- name: Add kubernetes repository key
+  apt_key:
     url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
-    state: present                                            
-                                                              
-- name: Add kubernetes repository                             
-  apt_repository:                                             
+    state: present
+
+- name: Add kubernetes repository
+  apt_repository:
     repo: deb http://apt.kubernetes.io/ kubernetes-{{ ansible_distribution_release }} main
-    state: present                                            
-                                                              
-- name: Update cache                                          
-  apt:                                                        
-    update_cache: yes                                         
-  ignore_errors: true                                         
-                                                              
-- name: Install kubernetes packages                           
-  apt:                                                        
-    name: "{{ item }}"                                        
-    state: present                                            
-  with_items:                                                 
-    - kubelet                                                 
-    - kubeadm                                                 
-    - kubectl                                                 
+    state: present
+
+- name: Update cache
+  apt:
+    update_cache: yes
+  ignore_errors: true
+
+- name: Install kubernetes packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - kubelet
+    - kubeadm
+    - kubectl
