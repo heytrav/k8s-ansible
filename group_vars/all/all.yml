@@ -23,7 +23,7 @@ subnet_dhcp_start: "{{ subnet_prefix }}.98"
 subnet_dhcp_end: "{{ subnet_prefix }}.200"
 
 default_os_image: ubuntu-16.04-x86_64
-default_flavor: c1.c1r1
+default_flavor: c1.c2r4
 
 region_nameservers:
   nz-por-1: [202.78.247.197, 202.78.247.198, 202.78.247.199]
