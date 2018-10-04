@@ -3,7 +3,7 @@ default_flavor: c1.c1r2
 docker_lib: docker-ce=17.03.2~ce-0~ubuntu-xenial
 kubernetes_version: 1.12.0
 kubeadm_extra_args: "--pod-network-cidr=10.244.0.0/16 --kubernetes-version {{ kubernetes_version }} --apiserver-cert-extra-sans '{{ ansible_host  }}'"
-flannel_version: v0.9.1
+flannel_version: c5d10c8
 kube_flannel_url: "https://raw.githubusercontent.com/coreos/flannel/{{ flannel_version }}/Documentation/kube-flannel.yml"
 main_security_groups:
   - group: "manage{{ suffix }}" 
