@@ -19,6 +19,7 @@
     name: "{{ item }}"
     state: present
   with_items:
-    - kubelet={{ kubernetes_version }}-00
-    - kubeadm={{ kubernetes_version }}-00
-    - kubectl={{ kubernetes_version }}-00
+    - kubernetes-cni={{ cni_apt_version }}
+    - kubelet={{ kubernetes_apt_version }}
+    - kubeadm={{ kubernetes_apt_version }}
+    - kubectl={{ kubernetes_apt_version }}
