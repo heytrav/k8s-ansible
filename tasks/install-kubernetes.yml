@@ -16,10 +16,9 @@
 
 - name: Install kubernetes packages
   apt:
-    name: "{{ item }}"
+    name:
+      - kubernetes-cni={{ cni_apt_version }}
+      - kubelet={{ kubernetes_apt_version }}
+      - kubeadm={{ kubernetes_apt_version }}
+      - kubectl={{ kubernetes_apt_version }}
     state: present
-  with_items:
-    - kubernetes-cni={{ cni_apt_version }}
-    - kubelet={{ kubernetes_apt_version }}
-    - kubeadm={{ kubernetes_apt_version }}
-    - kubectl={{ kubernetes_apt_version }}
