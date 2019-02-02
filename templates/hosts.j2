@@ -1,6 +1,9 @@
 
 localhost ansible_connection=local
 
+[kube-local]
+localhost
+
 [cluster]
 {{ prefix }}-master
 {{ prefix }}-worker[1:3]
