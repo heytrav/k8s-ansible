@@ -63,9 +63,9 @@
   hosts: training
   become: yes
   roles:
-    - docker
-    - docker-compose
-    - trainingpc-minikube
+    - role: docker
+    - role: docker-compose
+    - role: trainingpc-minikube
 
   pre_tasks: 
 
