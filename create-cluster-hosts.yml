@@ -89,19 +89,6 @@
         nics:
           - net-name: "{{ network_name }}"
         security_groups: "default,{{ hostvars[item].security_groups | map(attribute='group') | list | unique | join(',')}}"
-        userdata: |
-                  #cloud-config
-                  datasource:
-                    OpenStack:
-                      metadata_urls: ["http://169.254.169.254"]
-                      max_wait: -1
-                  users:
-                    - name: "{{ hostvars[item].ssh_user }}"
-                      shell: /bin/bash
-                      lock_passwd: true
-                      sudo: ALL=(ALL) NOPASSWD:ALL
-                      ssh_authorized_keys:
-                        - "{{ ssh_public_key }}"
       with_items: "{{ host_set }}"
 
     - name: Assign floating ips
@@ -119,7 +106,7 @@
       add_host:
         name: "{{ item.item }}"
         ansible_host: "{{ item.floating_ip.floating_ip_address }}"
-        ansible_user: "{{ hostvars[item.item].ssh_user }}"
+        ansible_user: "{{ hostvars[item.item].ansible_user }}"
         fixed_ip: "{{ item.floating_ip.fixed_ip_address }}"
         ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
         ansible_python_interpreter: /usr/bin/python
@@ -152,11 +139,11 @@
         insertbefore: BOF
         block: |
           Host {{ inventory_hostname }}
-              User {{ ssh_user }}
+              User {{ ansible_user }}
               StrictHostKeyChecking no
           Host {{ ansible_host }}
               Hostname {{ inventory_hostname }}
-              User {{ ssh_user }}
+              User {{ ansible_user }}
               StrictHostKeyChecking no
         marker: "# {mark} ANSIBLE MANAGED BLOCK for {{ inventory_hostname }}"
 
@@ -174,6 +161,8 @@
   hosts: cluster
   become: true
   gather_facts: false
+  tags:
+    - remote-setup
   vars: 
     host_set: "{{ groups.cluster  }}"
   tasks:
@@ -203,6 +192,8 @@
 - name: Set up Docker on hosts
   hosts: cluster
   become: yes
+  tags:
+    - remote-setup
   roles: 
     - docker
 

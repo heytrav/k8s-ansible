@@ -44,23 +44,23 @@
 
     - name: Create kube directory
       file:
-        path: "/home/{{ ssh_user }}/.kube"
+        path: "/home/{{ ansible_user }}/.kube"
         state: directory
-        owner: "{{ ssh_user }}"
-        group: "{{ ssh_user }}"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
 
     - name: Copy admin conf to user directory
       become: yes
-      command: cp -i /etc/kubernetes/admin.conf /home/{{ ssh_user }}/.kube/config
+      command: cp -i /etc/kubernetes/admin.conf /home/{{ ansible_user }}/.kube/config
       args:
-        creates: "/home/{{ ssh_user }}/.kube/config"
+        creates: "/home/{{ ansible_user }}/.kube/config"
 
     - name: Change file ownership of kube config
       file:
-        path: "/home/{{ ssh_user }}/.kube/config"
+        path: "/home/{{ ansible_user }}/.kube/config"
         state: file
-        owner: "{{ ssh_user }}"
-        group: "{{ ssh_user }}"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
 
 
 - name: Set up cluster for regular user
@@ -76,7 +76,7 @@
 
     - name: Retrieve admin.conf file
       fetch:
-        src:  "/home/{{ ssh_user }}/.kube/config"
+        src:  "/home/{{ ansible_user }}/.kube/config"
         dest:  "{{ lookup('env', 'HOME') }}/k8s-admin.conf"
         flat: true
 

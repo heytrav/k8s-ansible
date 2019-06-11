@@ -1,4 +1,4 @@
-flannel_semaphore: "/home/{{ ssh_user }}/applied_flanel_pod_network"
+flannel_semaphore: "/home/{{ ansible_user }}/applied_flanel_pod_network"
 host_security_groups:
   - group: "k8s-master{{ suffix }}"
     port: 6443

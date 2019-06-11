@@ -2,7 +2,7 @@
 - name: Set up local environment for k8s workshop
   hosts: pristine
   vars:
-    ssh_user: "{{ lookup('env', 'USER') }}"
+    ansible_user: "{{ lookup('env', 'USER') }}"
     vault_password_path: "{{ lookup('env', 'HOME') }}/.ansible/kubernetes_workshop_vault_password"
   tasks:
 
@@ -15,38 +15,38 @@
     - name: Replace train users bashrc with a custom version
       template:
         src: templates/train.bashrc.j2
-        dest: "/home/{{ ssh_user }}/.bashrc"
+        dest: "/home/{{ ansible_user }}/.bashrc"
         mode: 0644
 
     - name: Add ansible.cfg to user machine
       template:
         src: templates/ansible.cfg.j2
         dest: "{{ lookup('env', 'HOME') }}/.ansible.cfg"
-        owner: "{{ ssh_user }}"
-        group: "{{ ssh_user }}"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
         mode: '0644'
 
     - name: Create ansible directory in user home directory
       file:
         path: "{{ lookup('env', 'HOME') }}/.ansible/inventory"
         state: directory
-        owner: "{{ ssh_user }}"
-        group: "{{ ssh_user  }}"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user  }}"
 
     - name: Add vault secret to file
       copy:
         dest: "{{ vault_password_path }}"
         content: "{{ project_vault_password_input.user_input }}"
-        owner: "{{ ssh_user }}"
-        group: "{{ ssh_user  }}"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user  }}"
         mode: 0644
 
     - name: Add default hosts file for creating clusters
       template:
         src: templates/hosts.j2
         dest: "{{ lookup('env', 'HOME') }}/.ansible/inventory/cloud-hosts"
-        owner: "{{ ssh_user }}"
-        group: "{{ ssh_user }}"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
         mode: '0644'
 
 
@@ -54,7 +54,7 @@
 - name: Set up catalyst cloud credentials
   hosts: training
   vars:
-    ssh_user: "{{ lookup('env', 'USER') }}"
+    ansible_user: "{{ lookup('env', 'USER') }}"
   roles:
     - role: cloud-config
 
