@@ -86,9 +86,39 @@
         image: "{{ default_os_image }}"
         key_name: "{{ keypair_name  }}"
         flavor: "{{ default_flavor }}"
+        config_drive: yes
         nics:
           - net-name: "{{ network_name }}"
         security_groups: "default,{{ hostvars[item].security_groups | map(attribute='group') | list | unique | join(',')}}"
+        meta: 
+          inventory_hostname: "{{ item }}"
+          groups: "{{ prefix }},{{ hostvars[item].group_names | join(',') }}"
+        userdata: |
+          #cloud-config
+          hostname: "{{ item }}"
+          ssh_authorized_keys:
+            - "{{ ssh_public_key }}"
+          write_files:
+            - path: /var/lib/rancher/conf/cloud-config.yml
+              permissions: "0644"
+              owner: root
+              content: |
+                #cloud-config
+                ssh_authorized_keys:
+                  - "{{ ssh_public_key }}"
+                users:
+                  - name: rancher
+                    shell: /bin/bash
+                    lock_passwd: true
+                    sudo: ALL=(ALL) NOPASSWD:ALL
+                    ssh_authorized_keys:
+                      - "{{ ssh_public_key }}"
+          k3os:
+            data_sources:
+              - openstack
+            dns_nameservers:
+              - 8.8.8.8
+              - 1.1.1.1
       with_items: "{{ host_set }}"
 
     - name: Assign floating ips
