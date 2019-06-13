@@ -97,27 +97,18 @@
           #cloud-config
           hostname: "{{ item }}"
           ssh_authorized_keys:
-            - "{{ ssh_public_key }}"
-          write_files:
-            - path: /var/lib/rancher/conf/cloud-config.yml
-              permissions: "0644"
-              owner: root
-              content: |
-                #cloud-config
-                ssh_authorized_keys:
-                  - "{{ ssh_public_key }}"
-                users:
-                  - name: rancher
-                    shell: /bin/bash
-                    lock_passwd: true
-                    sudo: ALL=(ALL) NOPASSWD:ALL
-                    ssh_authorized_keys:
-                      - "{{ ssh_public_key }}"
+            #- "{{ ssh_public_key }}"
+            - github:heytrav
+            - github:Kodiack
+            - github:catalystfd
           k3os:
-            mode: install
+            k3s_args:
+              - server
+              - "--disable-agent"
             dns_nameservers:
-              - 8.8.8.8
-              - 1.1.1.1
+             {% for ns in hostvars[item].default_nameservers %}
+              - "{{ ns }}" 
+             {% endfor %} 
       with_items: "{{ host_set }}"
 
     - name: Assign floating ips
@@ -230,6 +221,8 @@
 - name: Add manager ip as fake DNS for voting app
   hosts: localhost
   become: yes
+  tags:
+    - remote-setup
   tasks:
     - name: Add manager IP to /etc/hosts
       blockinfile:
