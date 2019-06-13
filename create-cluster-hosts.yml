@@ -114,8 +114,7 @@
                     ssh_authorized_keys:
                       - "{{ ssh_public_key }}"
           k3os:
-            data_sources:
-              - openstack
+            mode: install
             dns_nameservers:
               - 8.8.8.8
               - 1.1.1.1
