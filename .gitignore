@@ -1,4 +1,3 @@
-cloud-hosts
 *.retry
 venv
 vault_password

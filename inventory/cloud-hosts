@@ -1,0 +1,17 @@
+kube-local ansible_connection=local ansible_python_interpreter='/usr/bin/env python'
+
+[manager]
+k3os-manager
+
+[cluster]
+k3os-manager
+k3os-master
+k3os-worker[1:3]
+
+[master]
+k3os-master
+
+
+[worker]
+k3os-worker[1:3]
+
