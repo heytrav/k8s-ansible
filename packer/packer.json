@@ -12,7 +12,7 @@
       "source_image_filter": {
         "most_recent": true,
         "filters": {
-          "name": "ubuntu-minimal-18.04-x86_64",
+          "name": "ubuntu-18.04-x86_64",
           "visibility": "protected",
           "owner": "94b566de52f9423fab80ceee8c0a4a23"
         }
