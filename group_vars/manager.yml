@@ -9,7 +9,6 @@ host_security_groups:
     remote_ip_prefix: 0.0.0.0/0
 
 cloud_config:
-  hostname: "{{ item }}"
   ssh_authorized_keys:
     - github:heytrav
     - github:Kodiack

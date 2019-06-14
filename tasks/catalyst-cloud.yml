@@ -62,7 +62,7 @@
     cloud: "{{ cloud_name }}"
     state: present
     name: "{{ item }}"
-    image: "{{ default_os_image }}"
+    image: "{{ hostvars[item].default_os_image }}"
     key_name: "{{ keypair_name  }}"
     flavor: "{{ default_flavor }}"
     config_drive: yes
@@ -72,36 +72,7 @@
     meta: 
       inventory_hostname: "{{ item }}"
       groups: "{{ prefix }},{{ hostvars[item].group_names | join(',') }}"
-    userdata: |
-      #cloud-config
-      hostname: "{{ item }}"
-      ssh_authorized_keys:
-        - "{{ ssh_public_key }}"
-        - github:heytrav
-        - github:Kodiack
-        - github:catalystfd
-      write_files:
-        - path: /var/lib/rancher/conf/cloud-config.yml
-          permissions: "0644"
-          owner: root
-          content: |
-            #cloud-config
-            ssh_authorized_keys:
-              - github:heytrav
-              - github:Kodiack
-              - github:catalystfd
-            users:
-              - name: rancher
-                shell: /bin/bash
-                lock_passwd: true
-                sudo: ALL=(ALL) NOPASSWD:ALL
-                ssh_authorized_keys:
-                  - github:heytrav
-                  - github:Kodiack
-                  - github:catalystfd
-      dns_nameservers:
-        - 8.8.8.8
-        - 1.1.1.1
+    userdata: "{{ lookup('template', 'templates/cloud-config.j2') }}"
   with_items: "{{ host_set }}"
 
 - name: Assign floating ips

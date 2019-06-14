@@ -1,4 +1,4 @@
-kube-local ansible_connection=local ansible_python_interpreter='/usr/bin/env python'
+kube-local ansible_connection=local ansible_python_interpreter="/usr/bin/env python"
 
 [manager]
 travis-pc-manager
@@ -6,12 +6,12 @@ travis-pc-manager
 [cluster]
 travis-pc-manager
 travis-pc-master
-travis-pc-worker[1:3]
+travis-pc-worker[1:2]
 
 [master]
 travis-pc-master
 
 
 [worker]
-travis-pc-worker[1:3]
+travis-pc-worker[1:2]
 

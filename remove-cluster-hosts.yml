@@ -17,7 +17,7 @@
         - openstack.metadata.inventory_hostname is defined
 
 - name: Teardown Catalyst Cloud hosts
-  hosts: localhost
+  hosts: kube-local
   gather_facts: false
   vars:
     host_set: "{{ [ node | default(groups.teardown) ] | flatten | list }}"

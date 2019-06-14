@@ -19,3 +19,12 @@ host_security_groups:
   - group: "k8s-master{{ suffix }}"
     port: 10255
     remote_group: "k8s-master{{ suffix }}" 
+
+
+
+cloud_config:
+  ssh_authorized_keys:
+    - github:heytrav
+    - github:Kodiack
+    - github:catalystfd
+
