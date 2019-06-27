@@ -1,5 +1,7 @@
 ---
-prefix: "{{ lookup('lines', 'hostname') }}"
+prefix: "{{ lookup('env', 'PREFIX') }}"
+security_group_names: "{{ security_groups | map(attribute='group') | unique | list }}"
+
 cloud_name: docker-training
 profile_name: catalyst-training
 os_username: docker-training@catalyst.net.nz
@@ -33,3 +35,4 @@ region_nameservers:
 
 default_nameservers: "{{ region_nameservers['nz-por-1'] }}"
 
+security_group_names: "{{ security_groups | map(attribute='group') | unique | list }}"

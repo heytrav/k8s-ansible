@@ -61,19 +61,18 @@
   os_server:
     cloud: "{{ cloud_name }}"
     state: present
-    name: "{{ item }}"
-    image: "{{ hostvars[item].default_os_image }}"
+    name: "{{ inventory_hostname }}"
+    image: "{{ default_os_image }}"
     key_name: "{{ keypair_name  }}"
     flavor: "{{ default_flavor }}"
     config_drive: yes
     nics:
       - net-name: "{{ network_name }}"
-    security_groups: "default,{{ hostvars[item].security_groups | map(attribute='group') | list | unique | join(',')}}"
+    security_groups: "default,{{ security_group_names | unique | join(',')}}"
     meta: 
-      inventory_hostname: "{{ item }}"
-      groups: "{{ prefix }},{{ hostvars[item].group_names | join(',') }}"
+      inventory_hostname: "{{ inventory_hostname }}"
+      groups: "{{ prefix }},{{ group_names | join(',') }}"
     userdata: "{{ lookup('template', 'templates/cloud-config.j2') }}"
-  with_items: "{{ host_set }}"
 
 - name: Assign floating ips
   os_floating_ip:
@@ -81,22 +80,18 @@
     state: present
     reuse: yes
     wait: true
-    server: "{{ item }}"
+    server: "{{ inventory_hostname }}"
   register: floating_ip_info
-  with_items:
-    - "{{ host_set }}"
 
 - name: Append floating ip to host info
   add_host:
-    name: "{{ item.item }}"
-    ansible_host: "{{ item.floating_ip.floating_ip_address }}"
-    ansible_user: "{{ hostvars[item.item].ansible_user }}"
-    fixed_ip: "{{ item.floating_ip.fixed_ip_address }}"
+    name: "{{ inventory_hostname }}"
+    ansible_host: "{{ floating_ip_info.floating_ip.floating_ip_address }}"
+    ansible_user: "{{ hostvars[inventory_hostname].ansible_user }}"
+    fixed_ip: "{{ floating_ip_info.floating_ip.fixed_ip_address }}"
     ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
     ansible_python_interpreter: /usr/bin/python
-  with_items: "{{ floating_ip_info.results }}"
 
 - wait_for:
-    host: "{{ hostvars[item].ansible_host }}"
+    host: "{{ hostvars[inventory_hostname].ansible_host }}"
     port: 22
-  with_items: "{{ host_set }}"

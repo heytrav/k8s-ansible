@@ -1,0 +1,106 @@
+
+
+- name: Provision master machine in catalyst cloud
+  hosts: master
+  gather_facts: false
+  serial: 1
+  tasks:
+    - name: Dump out the cloud config
+      debug:
+        var: cloud_config
+
+    - block:
+        - import_tasks: tasks/catalyst-cloud.yml
+      delegate_to: localhost
+
+- name: Scrape master machine for node token
+  hosts: master
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Add public ip to /etc/hosts
+      raw: echo "127.0.0.1 {{ inventory_hostname }}" >> /etc/hosts
+
+    - name: Add public ip to /etc/hosts
+      raw: hostname {{ inventory_hostname }}
+
+    - name: Get contents of file
+      raw: cat /var/lib/rancher/k3s/server/node-token
+      register: node_token
+
+    - name: Output results of node token
+      debug:
+        var: node_token
+
+- name: Provision worker machines in catalyst cloud
+  hosts: worker
+  gather_facts: false
+  serial: 1
+  vars:
+    # optional suffix to namespace resources
+    worker_token: "{{ hostvars[groups.master[0]].node_token.stdout_lines[0] }}"
+  tasks:
+    - name: Output the node token
+      debug:
+        var: worker_token
+
+    - name: Dump out the cloud config
+      debug:
+        var: cloud_config
+
+    - block:
+        - import_tasks: tasks/catalyst-cloud.yml
+      delegate_to: localhost
+
+- name: Set hostname on worker
+  hosts: worker
+  become: true
+  gather_facts: false
+  serial: 1
+  tasks: 
+    - name: Add public ip to /etc/hosts
+      raw: echo "127.0.0.1 {{ inventory_hostname }}" >> /etc/hosts
+
+    - name: Add public ip to /etc/hosts
+      raw: hostname {{ inventory_hostname }}
+
+
+- name: Basic host setup
+  hosts: cluster
+  become: true
+  gather_facts: false
+  vars: 
+    host_set: "{{ groups.cluster  }}"
+  serial: 1
+  tasks:
+    - name: Remove floating ip from known hosts
+      delegate_to: localhost
+      known_hosts:
+        name: "{{ ansible_host }}"
+        state: absent
+
+    - name: "Add {{ inventory_hostname }} to local ~/.ssh/config"
+      delegate_to: localhost
+      blockinfile:
+        dest: "{{ lookup('env', 'HOME') }}/.ssh/config"
+        insertbefore: BOF
+        block: |
+          Host {{ inventory_hostname }}
+              User {{ ansible_user }}
+              StrictHostKeyChecking no
+          Host {{ ansible_host }}
+              Hostname {{ inventory_hostname }}
+              User {{ ansible_user }}
+              StrictHostKeyChecking no
+        marker: "# {mark} ANSIBLE MANAGED BLOCK for {{ inventory_hostname }}"
+
+    - name: "Add {{ inventory_hostname }} to /etc/hosts"
+      delegate_to: localhost
+      become: yes
+      blockinfile:
+        dest: /etc/hosts
+        insertafter: EOF
+        block: |
+          {{ ansible_host }} {{ inventory_hostname }}
+        marker: "# {mark} ANSIBLE MANAGED BLOCK for {{ inventory_hostname }}"
+

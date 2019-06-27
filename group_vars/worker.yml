@@ -16,6 +16,6 @@ cloud_config:
     - github:Kodiack
     - github:catalystfd
   k3os:
-    server_url: "https://202.49.242.163:6443"
+    server_url: "https://{{ hostvars[groups.master[0]].fixed_ip }}:6443"
     token: "{{ worker_token }}"
 

@@ -1,8 +1,7 @@
 # 2GB ram minimum for kubernetes
 default_os_image: rancheros-1560459796
 
-
-
+ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
 
 docker_lib: docker-ce=17.03.2~ce-0~ubuntu-xenial
 kubernetes_version: 1.11.3
@@ -18,3 +17,4 @@ main_security_groups:
 
 
 security_groups: "{{ main_security_groups + host_security_groups }}"
+
