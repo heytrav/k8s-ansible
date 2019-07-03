@@ -4,6 +4,8 @@
   hosts: all:!kube-local
   gather_facts: false
   serial: 1
+  vars:
+    teardown_node: "{{ node | mandatory }}"
   tasks:
     - name: Assign hostname to host
       add_host:
@@ -29,7 +31,7 @@
           - teardown
       when: 
         - openstack is defined
-        - node == openstack.name or node in group_names
+        - teardown_node == openstack.name or teardown_node in group_names
 
 - name: Teardown Catalyst Cloud hosts
   hosts: teardown
@@ -41,9 +43,14 @@
               os_auth:
                 cloud: "{{ cloud_name }}"
 
-            - name: Remove floating ips from known_hosts
+            - name: Remove host name from known_hosts
               known_hosts:
                 name: "{{ inventory_hostname }}"
+                state: absent
+
+            - name: Remove host ip from known_hosts
+              known_hosts:
+                name: "{{ ansible_host }}"
                 state: absent
 
             - name: Disassociate floating ip
@@ -99,7 +106,7 @@
           with_items: "{{ security_group_names }}"
       delegate_to: localhost
 
-- name: Teardown Catalyst Cloud hosts
+- name: Remove local host configuration
   hosts: teardown
   gather_facts: false
   serial: 1

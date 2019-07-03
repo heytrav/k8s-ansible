@@ -28,9 +28,9 @@
     - name: Setup script to start interface
       template:
         src: templates/start-rancher.sh.j2
-        dest: "{{ lookup('env', 'HOME') }}/start-rancher"
-        owner: "{{ lookup('env', 'USER') }}"
-        group: "{{ lookup('env', 'USER') }}"
+        dest: /usr/local/bin/start-rancher"
+        owner: root
+        group: root
         mode: 0755
       delegate_to: localhost
 
