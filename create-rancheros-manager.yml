@@ -25,3 +25,12 @@
       raw:  docker run -d --restart=unless-stopped -p 80:80 -p 443:443 rancher/rancher
       ignore_errors: true
 
+    - name: Setup script to start interface
+      template:
+        src: templates/start-rancher.sh.j2
+        dest: "{{ lookup('env', 'HOME') }}/start-rancher"
+        owner: "{{ lookup('env', 'USER') }}"
+        group: "{{ lookup('env', 'USER') }}"
+        mode: 0755
+      delegate_to: localhost
+
