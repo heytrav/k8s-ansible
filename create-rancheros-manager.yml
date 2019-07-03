@@ -28,7 +28,7 @@
     - name: Setup script to start interface
       template:
         src: templates/start-rancher.sh.j2
-        dest: /usr/local/bin/start-rancher"
+        dest: /usr/local/bin/open-rancher
         owner: root
         group: root
         mode: 0755
