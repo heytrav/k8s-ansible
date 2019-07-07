@@ -16,13 +16,14 @@
         - openstack is defined
         - openstack.metadata.inventory_hostname is defined
 
-    - name: Assign hostname to host
+    - name: Assign groups to host
       add_host:
         name: "{{ openstack.name }}"
         groups: "{{ openstack.metadata.groups }}"
       when: 
         - openstack is defined
         - openstack.metadata.groups is defined
+      ignore_errors: true
 
     - name: Assign hosts to be deleted
       add_host:
@@ -31,6 +32,7 @@
           - teardown
       when: 
         - openstack is defined
+        - openstack.metadata.groups is defined
         - teardown_node == openstack.name or teardown_node in group_names
 
 - name: Teardown Catalyst Cloud hosts
