@@ -56,7 +56,6 @@
     remote_group: "{{ item.remote_group | default(omit) }}"
   with_items: "{{ security_groups }}"
 
-
 - name: Create cluster instances
   os_server:
     cloud: "{{ cloud_name }}"
@@ -68,7 +67,7 @@
     config_drive: yes
     nics:
       - net-name: "{{ network_name }}"
-    security_groups: "{{ security_group_names | unique | join(',')}}"
+    security_groups: "{{ security_group_names | unique | join(',') }}"
     meta: 
       inventory_hostname: "{{ inventory_hostname }}"
       groups: "{{ prefix }},{{ group_names | join(',') }}"
@@ -91,6 +90,16 @@
     fixed_ip: "{{ floating_ip_info.floating_ip.fixed_ip_address }}"
     ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
     ansible_python_interpreter: /usr/bin/python
+
+- name: Remove ip and host from known_hosts
+  known_hosts:
+    name: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ inventory_hostname }}"
+    - "{{ ansible_host }}"
+    - "{{ fixed_ip }}"
+
 
 - wait_for:
     host: "{{ hostvars[inventory_hostname].ansible_host }}"

@@ -1,4 +1,5 @@
 
+prefix: "{{ lookup('env', 'PREFIX') }}"
 default_os_image: test-rancheros-v1.5.2-20190611
 host_security_groups: 
   - group: "k8s-rancher-management{{ suffix }}"
