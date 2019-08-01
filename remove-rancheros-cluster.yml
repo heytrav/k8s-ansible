@@ -23,6 +23,7 @@
   hosts: mycluster
   gather_facts: false
   serial: 1
+  tasks:
     - name: Assign groups to host
       add_host:
         name: "{{ openstack.name }}"
