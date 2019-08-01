@@ -12,18 +12,11 @@
         ansible_user: "{{ hostvars[openstack.name].ansible_user }}"
         name: "{{ openstack.name }}"
         ansible_host: "{{ openstack.public_v4 | default(openstack.private_v4, true) }}"
-        groups:
-          - mycluster
       when: 
         - openstack is defined
         - openstack.metadata.inventory_hostname is defined
         - openstack.metadata.inventory_hostname is search(prefix)
 
-- name: Preflight removing gitlab-runner
-  hosts: mycluster
-  gather_facts: false
-  serial: 1
-  tasks:
     - name: Assign groups to host
       add_host:
         name: "{{ openstack.name }}"
@@ -31,6 +24,8 @@
       when: 
         - openstack is defined
         - openstack.metadata.groups is defined
+        - openstack.metadata.inventory_hostname is defined
+        - openstack.metadata.inventory_hostname is search(prefix)
       ignore_errors: true
 
     - name: Assign hosts to be deleted
@@ -42,6 +37,8 @@
         - openstack is defined
         - openstack.metadata.groups is defined
         - teardown_node == openstack.name or teardown_node in group_names
+        - openstack.metadata.inventory_hostname is defined
+        - openstack.metadata.inventory_hostname is search(prefix)
 
 - name: Teardown Catalyst Cloud hosts
   hosts: teardown
