@@ -12,10 +12,17 @@
         ansible_user: "{{ hostvars[openstack.name].ansible_user }}"
         name: "{{ openstack.name }}"
         ansible_host: "{{ openstack.public_v4 | default(openstack.private_v4, true) }}"
+        groups:
+          - mycluster
       when: 
         - openstack is defined
         - openstack.metadata.inventory_hostname is defined
+        - openstack.metadata.inventory_hostname is search(prefix)
 
+- name: Preflight removing gitlab-runner
+  hosts: mycluster
+  gather_facts: false
+  serial: 1
     - name: Assign groups to host
       add_host:
         name: "{{ openstack.name }}"
