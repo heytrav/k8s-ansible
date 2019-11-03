@@ -1,8 +1,3 @@
-data "openstack_compute_keypair_v2" "default" {
-  name = var.key_pair_name
-}
-
-
 data "openstack_images_image_v2" "default" {
   name = var.base_image
   most_recent = true
@@ -12,7 +7,7 @@ module "office_ssh_access" {
   name = "bastion-ssh-access"
   source = "../../modules/security_group"
   description = "SSH access from Catalyst office"
-  remote_ip_prefixes = var.catalyst_ssh_prefixes
+  remote_ip_prefixes = var.ssh_prefixes
   port = 22
 }
 
@@ -22,12 +17,12 @@ module "floating_ip" {
   
 }
 data "openstack_networking_network_v2" "default" {
-  network_id = var.private_network_id
+  network_id = var.k8s_network_id
 }
 
 resource "openstack_networking_port_v2" "default" {
   name = "k8s-bastion-port"
-  network_id = var.private_network_id
+  network_id = var.k8s_network_id
   admin_state_up = true
 }
 
@@ -38,7 +33,7 @@ resource "openstack_networking_port_secgroup_associate_v2" "default" {
 
 
 resource "openstack_compute_instance_v2" "default" {
-  name = var.instance_name
+  name = "${var.prefix}-bastion"
   key_pair = var.key_pair_name
   flavor_name = var.flavor
   image_id = data.openstack_images_image_v2.default.id
