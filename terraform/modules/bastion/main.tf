@@ -20,6 +20,10 @@ data "openstack_networking_network_v2" "default" {
   network_id = var.k8s_network_id
 }
 
+resource "openstack_networking_router_v2" "default" {
+  
+}
+
 resource "openstack_networking_port_v2" "default" {
   name = "k8s-bastion-port"
   network_id = var.k8s_network_id

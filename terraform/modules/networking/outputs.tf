@@ -1,9 +1,15 @@
 
-
-output "network_id" {
-  value = data.openstack_networking_network_v2.default.id
+output "cidr" {
+  description = "CIDR used for network subnet"
+  value = var.cidr
 }
 
-output "port_id" {
-  value = openstack_networking_port_v2.default.id
+output "subnet_id" {
+  description = "Subnet id"
+  value = openstack_networking_subnet_v2.private_subnet.id
+}
+
+output "network_id" {
+  description = "Network ID of private network"
+  value = openstack_networking_network_v2.private_network.id
 }
