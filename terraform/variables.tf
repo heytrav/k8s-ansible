@@ -32,3 +32,6 @@ variable "ansible_config" {
 variable "virtual_env" {
   type = string
 }
+variable "cloud_init_template" {
+  default = "../../cloud_init.tmpl" 
+}

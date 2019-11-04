@@ -4,49 +4,44 @@ data "openstack_images_image_v2" "default" {
 }
 
 module "office_ssh_access" {
-  name = "bastion-ssh-access"
-  source = "../../modules/security_group"
+  name = "${var.prefix}-bastion-ssh"
+  source = "../../modules/ip_security_group"
   description = "SSH access from Catalyst office"
   remote_ip_prefixes = var.ssh_prefixes
   port = 22
 }
 
-module "floating_ip" {
-  source = "../../modules/floating_ip"
-  port_id = openstack_networking_port_v2.default.id
-  
-}
 data "openstack_networking_network_v2" "default" {
   network_id = var.k8s_network_id
 }
-
-resource "openstack_networking_router_v2" "default" {
-  
+module "port" {
+  source = "../network_port"
+  name = "${var.prefix}-rancher"
+  network_id = openstack_networking_network_v2.default.id
+  security_groups = [module.office_ssh_access.id]
 }
 
-resource "openstack_networking_port_v2" "default" {
-  name = "k8s-bastion-port"
-  network_id = var.k8s_network_id
-  admin_state_up = true
-}
-
-resource "openstack_networking_port_secgroup_associate_v2" "default" {
- port_id = openstack_networking_port_v2.default.id
- security_group_ids =  [module.office_ssh_access.id]
+module "floating_ip" {
+  source = "../../modules/floating_ip"
+  port_id = module.port.port_id
 }
 
 
 resource "openstack_compute_instance_v2" "default" {
   name = "${var.prefix}-bastion"
-  key_pair = var.key_pair_name
+  key_pair = var.key_pair
   flavor_name = var.flavor
   image_id = data.openstack_images_image_v2.default.id
   network {
-    port = openstack_networking_port_v2.default.id
+    port = module.port.port_id
   }
 
-  metadata = var.instance_metadata
-  user_data = templatefile(var.cloud_init_template_path, {generated_public_key = tls_private_key.default.public_key_openssh})
+  metadata = {
+    "function" = "k8s_bastion"
+    "training_machine" = var.prefix
+
+  }
+  user_data = templatefile(var.cloud_init_template_path, {generated_public_key = var.public_key_openssh})
 
   provisioner "remote-exec" {
     inline = [
@@ -56,7 +51,7 @@ resource "openstack_compute_instance_v2" "default" {
       type = "ssh"
       host = module.floating_ip.address
       user = var.ssh_user
-      private_key = tls_private_key.default.private_key_pem
+      private_key = var.private_key_pem
     }
   }
 }

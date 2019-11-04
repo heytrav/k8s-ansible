@@ -1,3 +1,7 @@
 *.retry
 venv
 vault_password
+
+.terraform
+*.tfstate*
+
