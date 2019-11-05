@@ -1,4 +1,0 @@
-kube-local ansible_connection=local ansible_python_interpreter="/usr/bin/env python"
-
-[manager]
-travis-pc-manager

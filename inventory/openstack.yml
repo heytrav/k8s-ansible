@@ -1,0 +1,12 @@
+---
+plugin: openstack
+expand_hostvars: no
+only_clouds:
+  - docker-training
+keyed_groups:
+  - key: openstack.metadata.function
+    separator: ""
+    prefix: ""
+  - key: openstack.metadata.training_machine
+    separator: ""
+    prefix: ""

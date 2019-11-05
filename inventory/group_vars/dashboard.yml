@@ -1,0 +1,21 @@
+
+prefix: "{{ lookup('env', 'PREFIX') }}"
+rancher_image_version: v2.2.9
+ansible_user: core
+default_os_image: coreos-stable-x86_64
+host_security_groups:
+  - group: "k8s-rancher-management{{ suffix }}"
+    port: 443
+    remote_ip_prefix: 0.0.0.0/0
+
+metadata:
+  function: dashboard
+  training_machine: "{{ prefix }}"
+
+cloud_config:
+  ssh_authorized_keys:
+    - "{{ ssh_public_key }}"
+  dns_nameservers:
+    - 8.8.8.8
+    - 1.1.1.1
+

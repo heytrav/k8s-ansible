@@ -1,14 +1,8 @@
 ---
-- name: Preflight to set up machine specific variables
-  hosts: cluster
-  gather_facts: false
-  tasks:
-    - debug:
-        var: prefix | mandatory
 
 
 - name: Provision manager in catalyst cloud
-  hosts: manager
+  hosts: "{{ lookup('env', 'PREFIX') }}:&dashboard"
   gather_facts: false
   serial: 1
   tasks:
@@ -16,21 +10,13 @@
         - import_tasks: tasks/catalyst-cloud.yml
       delegate_to: localhost
 
-- name: Kick off docker management
-  hosts: manager
+
+- name: Start the rancher server
+  hosts: "{{ lookup('env', 'PREFIX') }}:&dashboard"
   gather_facts: false
-  become: true
   tasks:
-    - name: Kick off rancheros server
-      raw:  docker run -d --restart=unless-stopped -p 80:80 -p 443:443 rancher/rancher
-      ignore_errors: true
 
-    - name: Setup script to start interface
-      template:
-        src: templates/start-rancher.sh.j2
-        dest: /usr/local/bin/open-rancher
-        owner: root
-        group: root
-        mode: 0755
-      delegate_to: localhost
-
+    - name: Start running rancher server
+      raw: docker run -d --restart=unless-stopped --name rancher-dash -p 80:80 -p 443:443 rancher/rancher:{{ rancher_image_version }} > rancher_image_id
+      args:
+        creates: rancher_image_id

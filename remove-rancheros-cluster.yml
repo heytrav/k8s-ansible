@@ -1,47 +1,7 @@
 ---
 
-- name: Preflight removing gitlab-runner
-  hosts: all:!kube-local
-  gather_facts: false
-  serial: 1
-  vars:
-    teardown_node: "{{ node | mandatory }}"
-  tasks:
-    - name: Assign hostname to host
-      add_host:
-        ansible_user: "{{ hostvars[openstack.name].ansible_user }}"
-        name: "{{ openstack.name }}"
-        ansible_host: "{{ openstack.public_v4 | default(openstack.private_v4, true) }}"
-      when: 
-        - openstack is defined
-        - openstack.metadata.inventory_hostname is defined
-        - openstack.metadata.inventory_hostname is search(prefix)
-
-    - name: Assign groups to host
-      add_host:
-        name: "{{ openstack.name }}"
-        groups: "{{ openstack.metadata.groups }}"
-      when: 
-        - openstack is defined
-        - openstack.metadata.groups is defined
-        - openstack.metadata.inventory_hostname is defined
-        - openstack.metadata.inventory_hostname is search(prefix)
-      ignore_errors: true
-
-    - name: Assign hosts to be deleted
-      add_host:
-        name: "{{ openstack.name }}"
-        groups:
-          - teardown
-      when: 
-        - openstack is defined
-        - openstack.metadata.groups is defined
-        - teardown_node == openstack.name or teardown_node in group_names
-        - openstack.metadata.inventory_hostname is defined
-        - openstack.metadata.inventory_hostname is search(prefix)
-
 - name: Teardown Catalyst Cloud hosts
-  hosts: teardown
+  hosts: "{{ lookup('env', 'PREFIX') }}:&dashboard"
   gather_facts: false
   tasks:
     - block:
@@ -60,13 +20,8 @@
                 name: "{{ ansible_host }}"
                 state: absent
 
-            - name: Disassociate floating ip
-              os_floating_ip:
-                floating_ip_address: "{{ ansible_host }}"
-                state: absent
-                server: "{{ inventory_hostname }}"
 
-            - name: Remove cluster servers
+            - name: Remove servers
               os_server:
                 cloud: "{{ cloud_name }}"
                 name: "{{ inventory_hostname }}"
@@ -87,8 +42,8 @@
             name: "{{ keypair_name }}"
       delegate_to: localhost
 
-- name: Teardown Catalyst Cloud hosts
-  hosts: teardown
+- name: Teardown networks and security groups
+  hosts: "{{ lookup('env', 'PREFIX') }}:&dashboard"
   gather_facts: false
   run_once: true
   tasks:
@@ -113,33 +68,3 @@
           with_items: "{{ security_group_names }}"
       delegate_to: localhost
 
-- name: Remove local host configuration
-  hosts: teardown
-  gather_facts: false
-  serial: 1
-  tasks:
-    - block:
-        - name: Remove hosts from local ~/.ssh/config
-          blockinfile:
-            dest: "{{  lookup('env', 'HOME')  }}/.ssh/config"
-            state: absent
-            marker: "# {mark} ANSIBLE MANAGED BLOCK for {{ inventory_hostname }}"
-
-        - name: Remove host from /etc/hosts
-          become: yes
-          blockinfile:
-            dest: /etc/hosts
-            state: absent
-            insertafter: EOF
-            marker: "# {mark} ANSIBLE MANAGED BLOCK for {{ inventory_hostname }}"
-
-
-        - name: Remove fake domain from /etc/hosts
-          become: yes
-          blockinfile:
-            dest: /etc/hosts
-            state: absent
-            marker: "# {mark} ANSIBLE MANAGED BLOCK FOR voting.app"
-      delegate_to: localhost
-      tags: 
-        - select_nodes

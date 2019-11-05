@@ -68,9 +68,7 @@
     nics:
       - net-name: "{{ network_name }}"
     security_groups: "{{ security_group_names | unique | join(',') }}"
-    meta: 
-      inventory_hostname: "{{ inventory_hostname }}"
-      groups: "{{ prefix }},{{ group_names | join(',') }}"
+    meta: "{{ metadata }}"
     userdata: "{{ lookup('template', 'templates/cloud-config.j2') }}"
 
 - name: Assign floating ips
@@ -86,7 +84,7 @@
   add_host:
     name: "{{ inventory_hostname }}"
     ansible_host: "{{ floating_ip_info.floating_ip.floating_ip_address }}"
-    ansible_user: "{{ hostvars[inventory_hostname].ansible_user }}"
+    ansible_user: "{{ ansible_user }}"
     fixed_ip: "{{ floating_ip_info.floating_ip.fixed_ip_address }}"
     ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
     ansible_python_interpreter: /usr/bin/python
@@ -100,7 +98,6 @@
     - "{{ ansible_host }}"
     - "{{ fixed_ip }}"
 
-
 - wait_for:
-    host: "{{ hostvars[inventory_hostname].ansible_host }}"
+    host: "{{ ansible_host }}"
     port: 22

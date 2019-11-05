@@ -1,20 +1,11 @@
 ---
 
 cloud_name: docker-training
-profile_name: catalyst-training
-os_username: docker-training@catalyst.net.nz
-os_project_name: os-training.catalyst.net.nz
-os_project_id: 0cb6b9b744594a619b0b7340f424858b
 
 suffix: "-{{ prefix }}"
-#ansible_user: "{{ lookup('env', 'USER') }}"
-ansible_user: "{{ rancher_user }}"
-rancher_user: rancher
 ssh_public_key_file: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa.pub"
 ssh_public_key: "{{ lookup('file', ssh_public_key_file) }}"
 keypair_name: "training-key{{ suffix }}"
-#ssh_remote_cidr: "{{ lookup('dig', 'myip.opendns.com', '@resolver1.opendns.com') + '/32' | default('0.0.0.0/0', true) }}"
-ssh_remote_cidr: "0.0.0.0/0"
 network_name: "training-net{{ suffix }}"
 public_net_name: public-net
 subnet_name: "training-subnet{{ suffix }}"
@@ -24,7 +15,7 @@ subnet_cidr: "{{ subnet_prefix }}.0/24"
 subnet_dhcp_start: "{{ subnet_prefix }}.98"
 subnet_dhcp_end: "{{ subnet_prefix }}.200"
 
-default_flavor: c1.c4r8
+default_flavor: c1.c2r2
 
 region_nameservers:
   nz-por-1: [202.78.247.197, 202.78.247.198, 202.78.247.199]
@@ -34,9 +25,18 @@ region_nameservers:
 default_nameservers: "{{ region_nameservers['nz-por-1'] }}"
 
 main_security_groups:
-  - group: "manage{{ suffix }}" 
-    port: 22 
-    remote_ip_prefix: "0.0.0.0/0"
+  - group: "manage{{ suffix }}"
+    port: 22
+    remote_ip_prefix: 202.78.240.7/32
+  - group: "manage{{ suffix }}"
+    port: 22
+    remote_ip_prefix: 202.5.117.189/32
+  - group: "manage{{ suffix }}"
+    port: 22
+    remote_ip_prefix: 114.110.32.54/32
+  - group: "manage{{ suffix }}"
+    port: 22
+    remote_ip_prefix: 121.75.249.106/32
 
 
 security_groups: "{{ main_security_groups + host_security_groups }}"
