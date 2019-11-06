@@ -14,6 +14,10 @@ output "network_id" {
   value = openstack_networking_network_v2.private_network.id
 }
 
+output "public_network_name" {
+  description = "Name of public network"
+  value = data.openstack_networking_network_v2.public_network.name
+}
 output "network_name" {
   description = "Name of private network"
   value = openstack_networking_network_v2.private_network.name

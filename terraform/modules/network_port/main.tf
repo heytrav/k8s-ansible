@@ -1,5 +1,4 @@
 
-
 resource "openstack_networking_port_v2" "default" {
   name = var.name
   network_id = var.network_id

@@ -2,8 +2,23 @@ variable "cloud_name" {
   default = "docker-training"
 }
 
+variable "user_public_key_path" {
+  type = string
+ description = "Path to user's ssh public key" 
+  default = "~/.ssh/id_rsa.pub"
+}
+
+variable "user_private_key_path" {
+  description = "Path to private SSH key"
+  default = "~/.ssh/id_rsa"
+}
 variable "prefix" {
   type = string
+}
+variable "key_pair" {
+  description = "Key for openstack"
+  type = string
+  default = "training-key"
 }
 
 variable "ssh_prefixes" {
@@ -24,14 +39,18 @@ variable "k8s_network_id" {
 variable "base_dir" {
   description = "Base directory of project to run Ansible code from"
   type = string
+  default = "../.."
 }
 variable "ansible_config" {
   description = "Configuration file for Ansible"
   type = string
+  default = "ansible.cfg"
 }
 variable "virtual_env" {
   type = string
+  description = "Python virtual environment with ansible installed"
+  default = "venv"
 }
 variable "cloud_init_template" {
-  default = "../../cloud_init.tmpl" 
+  default = "./cloud_init.tmpl" 
 }

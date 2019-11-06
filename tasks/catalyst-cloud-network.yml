@@ -1,19 +1,11 @@
 ---
-- name: Connect to Catalyst Cloud
-  os_auth:
-    cloud: "{{ cloud_name }}"
 
-- name: Create keypair
-  os_keypair:
-    name: "{{ keypair_name }}"
-    public_key: "{{ ssh_public_key }}"
-    cloud: "{{ cloud_name }}"
-
-- name: Create Network
+- name: Create network
   os_network:
     name: "{{ network_name }}"
     state: present
     cloud: "{{ cloud_name }}"
+  register: network_result
 
 - name: Create subnet
   os_subnet:
@@ -37,67 +29,3 @@
     interfaces:
       - "{{ subnet_name }}"
 
-- name: Create security groups
-  os_security_group:
-    cloud: "{{ cloud_name }}"
-    state: present
-    name: "{{ item }}"
-  with_items: "{{ security_group_names }}"
-
-- name: Add rules for security group
-  os_security_group_rule:
-    cloud: "{{ cloud_name }}"
-    state: present
-    security_group: "{{ item.group }}"
-    protocol: "{{ item.proto | default('tcp') }}"
-    port_range_min: "{{ omit if item.port == 'any' else item.port }}"
-    port_range_max: "{{ omit if item.port == 'any' else item.port_end | default(item.port) }}"
-    remote_ip_prefix: "{{ item.remote_ip_prefix | default(omit) }}"
-    remote_group: "{{ item.remote_group | default(omit) }}"
-  with_items: "{{ security_groups }}"
-
-- name: Create cluster instances
-  os_server:
-    cloud: "{{ cloud_name }}"
-    state: present
-    name: "{{ inventory_hostname }}"
-    image: "{{ default_os_image }}"
-    key_name: "{{ keypair_name  }}"
-    flavor: "{{ default_flavor }}"
-    config_drive: yes
-    nics:
-      - net-name: "{{ network_name }}"
-    security_groups: "{{ security_group_names | unique | join(',') }}"
-    meta: "{{ metadata }}"
-    userdata: "{{ lookup('template', 'templates/cloud-config.j2') }}"
-
-- name: Assign floating ips
-  os_floating_ip:
-    cloud: "{{ cloud_name }}"
-    state: present
-    reuse: yes
-    wait: true
-    server: "{{ inventory_hostname }}"
-  register: floating_ip_info
-
-- name: Append floating ip to host info
-  add_host:
-    name: "{{ inventory_hostname }}"
-    ansible_host: "{{ floating_ip_info.floating_ip.floating_ip_address }}"
-    ansible_user: "{{ ansible_user }}"
-    fixed_ip: "{{ floating_ip_info.floating_ip.fixed_ip_address }}"
-    ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
-    ansible_python_interpreter: /usr/bin/python
-
-- name: Remove ip and host from known_hosts
-  known_hosts:
-    name: "{{ item }}"
-    state: absent
-  loop:
-    - "{{ inventory_hostname }}"
-    - "{{ ansible_host }}"
-    - "{{ fixed_ip }}"
-
-- wait_for:
-    host: "{{ ansible_host }}"
-    port: 22

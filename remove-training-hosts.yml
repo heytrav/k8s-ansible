@@ -1,7 +1,7 @@
 ---
 
 - name: Teardown Catalyst Cloud hosts
-  hosts: "{{ lookup('env', 'PREFIX') }}:&dashboard"
+  hosts: "{{ lookup('env', 'PREFIX') }}"
   gather_facts: false
   tasks:
     - block:
@@ -43,7 +43,7 @@
       delegate_to: localhost
 
 - name: Teardown networks and security groups
-  hosts: "{{ lookup('env', 'PREFIX') }}:&dashboard"
+  hosts: "{{ lookup('env', 'PREFIX') }}"
   gather_facts: false
   run_once: true
   tasks:

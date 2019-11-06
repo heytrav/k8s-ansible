@@ -1,5 +1,19 @@
 ---
 
+- name: Fetch subnet info for tenant
+  hosts: "{{ lookup('env', 'PREFIX') }}:&bastion"
+  gather_facts: false
+  tasks:
+    - block:
+      - name: Fetch subnet for kubernetes cluster
+        os_subnets_info:
+          cloud: "{{ cloud_name }}"
+        register: subnet_result
+      delegate_to: localhost
+    
+    - name: Set the network id
+      set_fact:
+        network_id: "{{ subnet_result.openstack_subnets | selectattr('name', 'match', '^travis-training-k8s.*') | map(attribute='network_id') | first }}"
 
 - name: Provision manager in catalyst cloud
   hosts: "{{ lookup('env', 'PREFIX') }}:&dashboard"
@@ -7,7 +21,19 @@
   serial: 1
   tasks:
     - block:
-        - import_tasks: tasks/catalyst-cloud.yml
+      - import_tasks: tasks/catalyst-cloud-auth.yml
+      - import_tasks: tasks/catalyst-cloud-network.yml
+      delegate_to: localhost
+
+
+- name: Provision manager in catalyst cloud
+  hosts: "{{ lookup('env', 'PREFIX') }}"
+  gather_facts: false
+  serial: 1
+  tasks:
+    - block:
+      - import_tasks: tasks/catalyst-cloud-auth.yml
+      - import_tasks: tasks/catalyst-cloud-host.yml
       delegate_to: localhost
 
 

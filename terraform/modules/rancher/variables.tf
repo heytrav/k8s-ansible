@@ -13,6 +13,11 @@ variable "key_pair" {
   description = "Name of key pair"
 }
 
+variable "user_public_key_path" {
+  type = string
+  description = "Path to user's ssh public key" 
+}
+
 variable "public_key_openssh" {
   type = string
   description = "Public SSH key"
@@ -26,11 +31,6 @@ variable "private_key_pem" {
 
 variable "flavor" {
   default = "c1.c1r1"
-}
-
-
-variable "private_network" {
-  type = string
 }
 
 variable "base_image" {
@@ -63,5 +63,9 @@ variable "base_dir" {
 variable "ansible_config" {
   type = string
   description = "Ansible config file"
-  default = "ansible.cfg"
+}
+
+variable "virtual_env" {
+  type = string
+  description = "Python virtual environment with Ansible installed"
 }

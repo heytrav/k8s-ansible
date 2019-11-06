@@ -23,7 +23,7 @@ resource "openstack_networking_subnet_v2" "private_subnet" {
 resource "openstack_networking_router_v2" "default" {
   name = local.router_name
   admin_state_up = true
-  external_network_id = openstack_networking_network_v2.public_network.id
+  external_network_id = data.openstack_networking_network_v2.public_network.id
 }
 
 resource "openstack_networking_router_interface_v2" "default" {

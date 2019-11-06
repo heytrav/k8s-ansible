@@ -8,6 +8,10 @@ variable "base_image" {
 variable "ssh_user" {
   default = "ubuntu"
 }
+variable "user_public_key_path" {
+  type = string
+  description = "Path to user's ssh public key" 
+}
 variable "key_pair" {
   type = string
   description = "Name of key pair"
@@ -23,19 +27,12 @@ variable "private_key_pem" {
   description = "Private key"
 }
 
-
 variable "flavor" {
   default = "c1.c1r1"
 }
 variable "ssh_prefixes" {
   description = "List of IP ranges"
   type = "list"
-}
-variable "instance_metadata" {
-  type = map
-  default = {
-    function = "k8s_bastion"
-  }
 }
 
 # Must specify the private network for the bastion host
