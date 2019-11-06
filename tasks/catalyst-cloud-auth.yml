@@ -1,0 +1,10 @@
+
+- name: Connect to Catalyst Cloud
+  os_auth:
+    cloud: "{{ cloud_name }}"
+
+- name: Create keypair
+  os_keypair:
+    name: "{{ keypair_name }}"
+    public_key: "{{ ssh_public_key }}"
+    cloud: "{{ cloud_name }}"
