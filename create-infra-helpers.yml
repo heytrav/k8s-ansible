@@ -13,7 +13,7 @@
     
     - name: Set the network id
       set_fact:
-        network_id: "{{ subnet_result.openstack_subnets | selectattr('name', 'match', '^travis-training-k8s.*') | map(attribute='network_id') | first }}"
+        network_id: "{{ subnet_result.openstack_subnets | selectattr('name', 'match', '^' + prefix + '.*') | map(attribute='network_id') | first }}"
 
 - name: Provision manager in catalyst cloud
   hosts: "{{ lookup('env', 'PREFIX') }}:&dashboard"
