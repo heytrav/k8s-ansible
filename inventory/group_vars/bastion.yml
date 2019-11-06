@@ -3,6 +3,8 @@ ansible_user: ubuntu
 default_os_image: ubuntu-18.04-x86_64
 host_security_groups: []
 
+master_private_ip: "{{ master_private_ip_result.stdout_lines[0] | regex_replace('^https://([^:]+).*', '\\1') }}"
+
 metadata:
   function: bastion
   training_machine: "{{ prefix }}"

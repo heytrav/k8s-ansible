@@ -18,7 +18,6 @@
 - name: Provision manager in catalyst cloud
   hosts: "{{ lookup('env', 'PREFIX') }}:&dashboard"
   gather_facts: false
-  serial: 1
   tasks:
     - block:
       - import_tasks: tasks/catalyst-cloud-auth.yml
@@ -29,12 +28,12 @@
 - name: Provision manager in catalyst cloud
   hosts: "{{ lookup('env', 'PREFIX') }}"
   gather_facts: false
-  serial: 1
   tasks:
     - block:
       - import_tasks: tasks/catalyst-cloud-auth.yml
       - import_tasks: tasks/catalyst-cloud-host.yml
       delegate_to: localhost
+
 
 
 - name: Start the rancher server
@@ -46,3 +45,21 @@
       raw: docker run -d --restart=unless-stopped --name rancher-dash -p 80:80 -p 443:443 rancher/rancher:{{ rancher_image_version }} > rancher_image_id
       args:
         creates: rancher_image_id
+
+    - name: Output command to open rancher
+      debug:
+        msg: "firefox https://{{ ansible_host }}"
+
+- name: Output bastion access instructions
+  hosts: "{{ lookup('env', 'PREFIX') }}:&bastion"
+  gather_facts: false
+  tasks:
+    - name: Retrieve master machine private ip
+      command: openstack coe cluster show --os-cloud {{ cloud_name }} {{ prefix }} -c api_address -f value
+      register: master_private_ip_result
+      delegate_to: localhost
+
+    - name: Output SSH tunnel command
+      debug:
+        msg: "ssh -f -L 6443:{{ master_private_ip }}:6443 ubuntu@{{ ansible_host }} -N"
+
