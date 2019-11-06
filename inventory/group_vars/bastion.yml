@@ -1,0 +1,8 @@
+---
+ansible_user: ubuntu
+default_os_image: ubuntu-18.04-x86_64
+host_security_groups: []
+
+metadata:
+  function: bastion
+  training_machine: "{{ prefix }}"
